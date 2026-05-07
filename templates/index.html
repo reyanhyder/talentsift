@@ -507,21 +507,54 @@ input[type="file"] { display: none; }
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 12px;
+  max-height: 160px;
+  overflow-y: auto;
 }
 
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: var(--accent2-light);
   border: 1px solid rgba(5,150,105,0.2);
   color: var(--accent2);
   font-size: 12px;
   font-weight: 500;
-  padding: 4px 12px;
+  padding: 4px 10px 4px 12px;
   border-radius: 100px;
   animation: chipPop 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  cursor: default;
 }
+
+.chip-remove {
+  background: rgba(5,150,105,0.15);
+  border: none;
+  color: var(--accent2);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.chip-remove:hover {
+  background: var(--danger);
+  color: white;
+}
+
+.file-count {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.file-count span { color: var(--accent2); font-weight: 600; }
 
 @keyframes chipPop {
   from { opacity:0; transform: scale(0.8) translateY(4px); }
@@ -1043,8 +1076,9 @@ footer {
         <div class="upload-label"><span>Click to upload</span> or drag & drop</div>
         <div class="upload-hint">PDF files only · Multiple supported</div>
       </div>
-      <input type="file" id="resumeInput" multiple accept=".pdf" onchange="handleFiles()">
+      <input type="file" id="resumeInput" multiple accept=".pdf">
       <div class="chips" id="chips"></div>
+      <div class="file-count" id="fileCount"></div>
     </div>
   </div>
 
@@ -1119,35 +1153,67 @@ const revealObserver = new IntersectionObserver((entries) => {
 }, { threshold: 0.12 });
 document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
 
-// DRAG AND DROP
+// FILE MANAGEMENT
+let selectedFiles = [];
+
 const zone = document.getElementById('uploadZone');
 zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('has-files'); });
 zone.addEventListener('dragleave', () => zone.classList.remove('has-files'));
 zone.addEventListener('drop', e => {
   e.preventDefault();
-  document.getElementById('resumeInput').files = e.dataTransfer.files;
-  handleFiles();
+  zone.classList.remove('has-files');
+  addFiles(Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf'));
 });
 
-function handleFiles() {
-  const input = document.getElementById('resumeInput');
+document.getElementById('resumeInput').addEventListener('change', function() {
+  addFiles(Array.from(this.files));
+  this.value = '';
+});
+
+function addFiles(newFiles) {
+  newFiles.forEach(file => {
+    if (!selectedFiles.find(f => f.name === file.name && f.size === file.size)) {
+      selectedFiles.push(file);
+    }
+  });
+  renderChips();
+}
+
+function removeFile(index) {
+  selectedFiles.splice(index, 1);
+  renderChips();
+  if (selectedFiles.length === 0) zone.classList.remove('has-files');
+}
+
+function renderChips() {
   const container = document.getElementById('chips');
+  const countEl = document.getElementById('fileCount');
   container.innerHTML = '';
-  zone.classList.add('has-files');
-  Array.from(input.files).forEach((f, i) => {
+
+  if (selectedFiles.length > 0) {
+    zone.classList.add('has-files');
+  }
+
+  selectedFiles.forEach((f, i) => {
     const chip = document.createElement('div');
     chip.className = 'chip';
-    chip.style.animationDelay = i * 0.06 + 's';
-    chip.innerHTML = '✓ ' + f.name;
+    chip.style.animationDelay = i * 0.03 + 's';
+    chip.innerHTML = `✓ ${f.name.length > 25 ? f.name.substring(0,22)+'...' : f.name}
+      <button class="chip-remove" onclick="removeFile(${i})" title="Remove">×</button>`;
     container.appendChild(chip);
   });
+
+  if (countEl) {
+    countEl.innerHTML = selectedFiles.length > 0
+      ? `<span>${selectedFiles.length}</span> file${selectedFiles.length !== 1 ? 's' : ''} selected`
+      : '';
+  }
 }
 
 async function analyze() {
   const jd = document.getElementById('jobDesc').value.trim();
-  const input = document.getElementById('resumeInput');
   const hasJD = jd.length > 0;
-  const hasFiles = input.files.length > 0;
+  const hasFiles = selectedFiles.length > 0;
 
   if (!hasJD && !hasFiles) {
     showToast("Please provide a job description and upload at least one resume before analyzing.");
@@ -1168,11 +1234,16 @@ async function analyze() {
 
   const fd = new FormData();
   fd.append('job_description', jd);
-  Array.from(input.files).forEach(f => fd.append('resumes', f));
+  selectedFiles.forEach(f => fd.append('resumes', f));
 
   document.getElementById('analyzeBtn').disabled = true;
   document.getElementById('loading').classList.add('active');
   document.getElementById('results').innerHTML = '';
+
+  // Update loading text for large batches
+  if (selectedFiles.length > 10) {
+    document.querySelector('.loading-title').textContent = `Analyzing ${selectedFiles.length} resumes...`;
+  }
 
   try {
     const res = await fetch('/analyze', { method: 'POST', body: fd });
@@ -1183,6 +1254,7 @@ async function analyze() {
   }
   document.getElementById('analyzeBtn').disabled = false;
   document.getElementById('loading').classList.remove('active');
+  document.querySelector('.loading-title').textContent = 'Analyzing with AI';
 }
 
 function renderResults(results) {
