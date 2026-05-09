@@ -375,8 +375,8 @@ nav {
   padding: 28px;
   box-shadow: var(--shadow);
   transition: box-shadow 0.4s, border-color 0.4s, transform 0.4s;
-  opacity: 0;
-  transform: translateY(40px);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .input-card.visible {
@@ -561,8 +561,8 @@ input[type="file"] { display: none; }
 
 /* ANALYZE BTN */
 .analyze-wrap {
-  opacity: 0;
-  transform: translateY(20px);
+  opacity: 1;
+  transform: translateY(0);
 }
 .analyze-wrap.visible {
   animation: riseUp 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) forwards;
@@ -1223,8 +1223,19 @@ footer {
     overlay.remove();
     // Animate hero words in
     animateHeroWords();
+    forceRevealAll();
   }, 2200);
 })();
+
+function forceRevealAll() {
+  document.querySelectorAll('[data-reveal]').forEach(el => {
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    el.classList.add('visible');
+  });
+  document.querySelector('.analyze-wrap').style.cssText += 'opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;';
+}
 
 function animateHeroWords() {
   const words = document.querySelectorAll('.hero-title .word');
