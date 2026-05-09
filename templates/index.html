@@ -126,7 +126,6 @@ nav {
   border-radius: 100px;
   margin-bottom: 40px;
   opacity: 0;
-  animation: riseUp 0.7s 0.3s cubic-bezier(0.22,1,0.36,1) forwards;
 }
 
 .hero-tag::before {
@@ -147,8 +146,7 @@ nav {
   letter-spacing: -0.03em;
   color: var(--ink);
   margin-bottom: 28px;
-  opacity: 0;
-  animation: riseUp 0.9s 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+  opacity: 1;
 }
 
 .hero-title em {
@@ -919,10 +917,64 @@ footer {
   letter-spacing: 0.04em;
 }
 
-@keyframes riseUp {
-  from { opacity:0; transform: translateY(24px); }
-  to { opacity:1; transform: translateY(0); }
+/* CINEMATIC INTRO */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: #0a0a0a;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0;
 }
+
+.intro-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: scale(1.4);
+  filter: blur(20px);
+}
+
+.intro-logo span { color: #2563eb; }
+
+.intro-tagline {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-top: 16px;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.intro-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: #2563eb;
+  box-shadow: 0 0 20px #2563eb;
+}
+
+/* HERO TITLE CINEMATIC */
+.hero-title .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(60px) rotateX(40deg);
+  transform-origin: bottom;
+  filter: blur(8px);
+}
+
+.hero-title em { font-style: italic; color: var(--accent); }
 
 /* TOAST */
 .toast {
@@ -992,10 +1044,17 @@ footer {
 </head>
 <body>
 
+<!-- CINEMATIC INTRO -->
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-logo" id="introLogo">Talent<span>Sift</span></div>
+  <div class="intro-tagline" id="introTagline">Intelligent Recruitment</div>
+  <div class="intro-bar" id="introBar"></div>
+</div>
+
 <!-- NAV -->
 <nav>
   <div class="nav-logo">Talent<span>Sift</span></div>
-  
+  <div class="nav-badge">AI Recruitment</div>
 </nav>
 
 <!-- HERO -->
@@ -1003,8 +1062,8 @@ footer {
   <div class="hero-tag">Intelligent Recruitment Platform</div>
 
   <h1 class="hero-title">
-    Hire the <em>right</em> person.<br>
-    <span class="line2">Every time.</span>
+    <span class="word">Hire</span> <span class="word">the</span> <span class="word"><em>right</em></span> <span class="word">person.</span><br>
+    <span class="word">Every</span> <span class="word">time.</span>
   </h1>
 
   <p class="hero-desc">
@@ -1095,7 +1154,7 @@ footer {
       <div class="dot"></div><div class="dot"></div><div class="dot"></div>
     </div>
     <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
-    <div class="loading-title">Ranking Candidates</div>
+    <div class="loading-title">Analyzing with Gemini AI</div>
     <div class="loading-sub">Uploading to cloud · Reading resumes · Ranking candidates</div>
   </div>
 
@@ -1121,6 +1180,74 @@ footer {
 </svg>
 
 <script>
+// CINEMATIC INTRO
+(function() {
+  const overlay = document.getElementById('introOverlay');
+  const logo = document.getElementById('introLogo');
+  const tagline = document.getElementById('introTagline');
+  const bar = document.getElementById('introBar');
+
+  // Lock scroll during intro
+  document.body.style.overflow = 'hidden';
+
+  // Phase 1: Logo slams in
+  setTimeout(() => {
+    logo.style.transition = 'opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1), filter 0.6s ease';
+    logo.style.opacity = '1';
+    logo.style.transform = 'scale(1)';
+    logo.style.filter = 'blur(0px)';
+  }, 100);
+
+  // Phase 2: Tagline fades in
+  setTimeout(() => {
+    tagline.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    tagline.style.opacity = '1';
+    tagline.style.transform = 'translateY(0)';
+  }, 600);
+
+  // Phase 3: Bar sweeps across
+  setTimeout(() => {
+    bar.style.transition = 'width 0.8s cubic-bezier(0.22,1,0.36,1)';
+    bar.style.width = '100%';
+  }, 900);
+
+  // Phase 4: Flash and slam out
+  setTimeout(() => {
+    overlay.style.transition = 'opacity 0.4s ease';
+    overlay.style.opacity = '0';
+    document.body.style.overflow = '';
+  }, 1800);
+
+  // Phase 5: Remove overlay
+  setTimeout(() => {
+    overlay.remove();
+    // Animate hero words in
+    animateHeroWords();
+  }, 2200);
+})();
+
+function animateHeroWords() {
+  const words = document.querySelectorAll('.hero-title .word');
+  words.forEach((word, i) => {
+    setTimeout(() => {
+      word.style.transition = 'opacity 0.5s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1), filter 0.5s ease';
+      word.style.opacity = '1';
+      word.style.transform = 'translateY(0) rotateX(0deg)';
+      word.style.filter = 'blur(0px)';
+    }, i * 80);
+  });
+
+  // Animate rest of hero after words
+  setTimeout(() => {
+    document.querySelector('.hero-tag').style.cssText += 'opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;';
+    document.querySelector('.hero-desc').style.cssText += 'opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;';
+    setTimeout(() => {
+      document.querySelector('.hero-actions').style.cssText += 'opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;';
+      document.querySelector('.hero-stats').style.cssText += 'opacity:1;transform:translateY(0);transition:opacity 0.6s ease,transform 0.6s ease;';
+    }, 200);
+  }, words.length * 80 + 200);
+}
+
 // TOAST SYSTEM
 function showToast(message, type = 'error') {
   const existing = document.querySelector('.toast');
