@@ -22,8 +22,21 @@ class SafeJSONProvider(DefaultJSONProvider):
             return None
         return super().default(value)
 
+def sanitize_for_json(value):
+    if isinstance(value, Undefined):
+        return None
+    if isinstance(value, dict):
+        return {str(k): sanitize_for_json(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [sanitize_for_json(item) for item in value]
+    return value
+
+def safe_json_dumps(value, **kwargs):
+    return json.dumps(sanitize_for_json(value), **kwargs)
+
 app = Flask(__name__)
 app.json = SafeJSONProvider(app)
+app.jinja_env.policies["json.dumps_function"] = safe_json_dumps
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "talentsift-secret-key-change-in-prod")
 
 # Groq
