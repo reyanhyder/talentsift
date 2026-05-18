@@ -1113,7 +1113,7 @@ footer {
 
 <script>
 // USER SESSION DATA from Flask
-const USER = {{ user | tojson }};
+const USER = {{ user | default({'id': '', 'email': '', 'name': ''}, true) | tojson }};
 
 // Set nav user info
 document.getElementById('navUsername').textContent = USER.name || USER.email;
