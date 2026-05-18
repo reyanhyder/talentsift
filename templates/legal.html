@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if page == 'privacy' %}Privacy Policy{% elif page == 'terms' %}Terms & Conditions{% else %}Cookie Policy{% endif %} - TalentSift</title>
+<meta name="description" content="TalentSift legal, privacy, and compliance information.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --cream:#faf8f5; --white:#fff; --ink:#1a1814; --ink2:#3d3a35; --muted:#7f7a70; --accent:#2563eb; --border:#e8e4de; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Outfit',sans-serif; background:var(--cream); color:var(--ink); line-height:1.75; -webkit-font-smoothing:antialiased; }
+nav { height:68px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; border-bottom:1px solid var(--border); background:rgba(250,248,245,.9); position:sticky; top:0; backdrop-filter:blur(18px); }
+.logo { font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:600; color:var(--ink); text-decoration:none; }
+.logo span { color:var(--accent); }
+.back { color:var(--muted); text-decoration:none; font-size:14px; }
+main { max-width:860px; margin:0 auto; padding:72px 24px 96px; }
+.eyebrow { font-size:12px; color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-weight:600; margin-bottom:16px; }
+h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,7vw,4.5rem); line-height:1; margin-bottom:20px; letter-spacing:-.03em; }
+.updated { color:var(--muted); font-size:14px; margin-bottom:40px; }
+section { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:16px; }
+h2 { font-size:1.05rem; margin-bottom:10px; color:var(--ink2); }
+p, li { color:var(--muted); font-size:15px; }
+ul { padding-left:20px; margin-top:10px; }
+a { color:var(--accent); }
+footer { border-top:1px solid var(--border); padding:32px 48px; color:var(--muted); font-size:13px; }
+@media(max-width:700px){ nav, footer{padding-left:24px;padding-right:24px;} section{padding:22px;} }
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/">Talent<span>Sift</span></a>
+  <a class="back" href="/">Back to app</a>
+</nav>
+<main>
+  {% if page == 'privacy' %}
+  <div class="eyebrow">Legal & Compliance</div>
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: May 18, 2026</div>
+  <section><h2>What We Collect</h2><p>TalentSift collects account details, uploaded resumes, job descriptions, analysis history, payment status, usage events, and support messages needed to provide the service.</p></section>
+  <section><h2>How We Use Data</h2><p>We use data to authenticate users, analyze resumes against job descriptions, enforce plan limits, improve product reliability, process payments, and provide support.</p></section>
+  <section><h2>Uploads And AI Processing</h2><p>Resume files may be stored with our cloud storage provider and processed by AI providers to generate ATS scoring, skill matches, summaries, and recommendations.</p></section>
+  <section><h2>Payments</h2><p>Payments are handled by Razorpay. TalentSift stores payment references, plan status, and verification metadata, but does not store card numbers.</p></section>
+  <section><h2>Your Choices</h2><p>You can request account deletion, data export, or support by contacting <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p></section>
+  {% elif page == 'terms' %}
+  <div class="eyebrow">Legal & Compliance</div>
+  <h1>Terms & Conditions</h1>
+  <div class="updated">Last updated: May 18, 2026</div>
+  <section><h2>Use Of Service</h2><p>TalentSift provides AI-assisted recruiting intelligence. You are responsible for reviewing outputs before making hiring decisions and for complying with employment laws.</p></section>
+  <section><h2>Acceptable Use</h2><p>You may not upload unlawful content, abuse the API, reverse engineer the service, bypass plan limits, or use TalentSift to make fully automated hiring decisions without human review.</p></section>
+  <section><h2>Plans And Billing</h2><p>Paid plans unlock higher usage limits. Billing activation depends on Razorpay account approval and successful payment verification.</p></section>
+  <section><h2>AI Output</h2><p>AI-generated scores and recommendations are probabilistic. TalentSift does not guarantee hiring outcomes or candidate performance.</p></section>
+  <section><h2>Contact</h2><p>Questions about these terms can be sent to <a href="mailto:{{ support_email }}">{{ support_email }}</a>.</p></section>
+  {% else %}
+  <div class="eyebrow">Legal & Compliance</div>
+  <h1>Cookie Policy</h1>
+  <div class="updated">Last updated: May 18, 2026</div>
+  <section><h2>Essential Cookies</h2><p>We use essential cookies for login sessions, security, and remembering cookie consent. These are required for the app to function.</p></section>
+  <section><h2>Analytics Cookies</h2><p>When enabled, analytics may help us understand page views, onboarding friction, and feature usage. You can decline non-essential tracking in the cookie banner.</p></section>
+  <section><h2>Managing Consent</h2><p>You can clear browser storage or contact <a href="mailto:{{ support_email }}">{{ support_email }}</a> for help with privacy choices.</p></section>
+  {% endif %}
+</main>
+<footer>TalentSift · {{ base_url }} · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a></footer>
+</body>
+</html>

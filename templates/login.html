@@ -229,6 +229,35 @@ body {
   box-shadow: none;
 }
 
+.btn-oauth {
+  width: 100%;
+  padding: 14px;
+  background: var(--white);
+  color: var(--ink2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 14px;
+}
+.link-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 13px;
+}
+.link-row button, .link-row a {
+  color: var(--accent);
+  background: none;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+
 .error-msg {
   background: #fef2f2;
   border: 1px solid rgba(220,38,38,0.2);
@@ -328,6 +357,11 @@ body {
       <span id="btnText">Sign In →</span>
       <div class="spinner" id="spinner"></div>
     </button>
+    <button class="btn-oauth" onclick="window.location.href='/auth/google'">Continue with Google</button>
+    <div class="link-row">
+      <button onclick="handlePasswordReset()">Forgot password?</button>
+      <a href="/privacy">Privacy</a>
+    </div>
 
     <div class="error-msg" id="errorMsg"></div>
   </div>
@@ -375,6 +409,25 @@ async function handleLogin() {
   btn.disabled = false;
   spinner.style.display = 'none';
   btnText.textContent = 'Sign In →';
+}
+
+async function handlePasswordReset() {
+  const email = document.getElementById('email').value.trim();
+  if (!email) {
+    showError('Enter your email first, then click forgot password.');
+    return;
+  }
+  try {
+    const res = await fetch('/password-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    showError(data.message || 'If the email exists, a reset link has been sent.');
+  } catch(e) {
+    showError('Could not send reset email. Try again.');
+  }
 }
 
 function showError(msg) {

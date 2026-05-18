@@ -4,7 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TalentSift — AI Recruitment Intelligence</title>
+<meta name="description" content="TalentSift helps recruiters rank resumes with AI-powered ATS scoring, skill gap analysis, and candidate recommendations.">
+<meta property="og:title" content="TalentSift — AI Recruitment Intelligence">
+<meta property="og:description" content="Upload resumes, paste a job description, and instantly rank candidates with ATS scoring.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://talentsift-production.up.railway.app/">
+<meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 :root {
   --cream: #faf8f5;
@@ -876,6 +883,8 @@ footer {
 .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 500; color: var(--ink2); }
 .footer-brand span { color: var(--accent); }
 .footer-tech { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+.footer-tech a { color: var(--muted); text-decoration: none; }
+.footer-tech a:hover { color: var(--accent); }
 
 /* TOAST */
 .toast {
@@ -905,6 +914,124 @@ footer {
 .toast-msg { font-size: 14px; color: var(--ink2); flex: 1; line-height: 1.4; }
 .toast-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 0 4px; transition: color 0.2s; flex-shrink: 0; }
 .toast-close:hover { color: var(--ink); }
+
+/* MODALS, PRICING, FEEDBACK */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,24,20,0.48);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: min(920px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-hover);
+  z-index: 501;
+  transform: translate(-50%, -46%) scale(0.98);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.28s cubic-bezier(0.22,1,0.36,1);
+}
+.modal.open { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--ink); line-height: 1; }
+.modal-sub { color: var(--muted); font-size: 14px; margin-top: 8px; }
+.modal-close { width: 34px; height: 34px; border: none; border-radius: 8px; background: var(--border2); cursor: pointer; font-size: 18px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 24px 28px 30px; }
+.price-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  background: var(--cream);
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+.price-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
+.price-name { font-size: 14px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 0.08em; }
+.price-amount { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; margin: 14px 0 4px; color: var(--ink); }
+.price-note { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.price-list { list-style: none; padding: 0; margin: 0 0 18px; }
+.price-list li { color: var(--ink2); font-size: 13px; margin-bottom: 8px; }
+.price-list li::before { content: '✓'; color: var(--accent2); margin-right: 8px; font-weight: 700; }
+.price-btn { width: 100%; border: none; border-radius: 10px; background: var(--ink); color: white; font-family: 'Outfit', sans-serif; padding: 12px; cursor: pointer; font-weight: 600; }
+.price-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.feedback-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--ink);
+  color: white;
+  cursor: pointer;
+  z-index: 180;
+  box-shadow: var(--shadow-lg);
+}
+.feedback-form { padding: 24px 28px 28px; }
+.feedback-form select, .feedback-form textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--cream);
+  font-family: 'Outfit', sans-serif;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.feedback-form textarea { height: 140px; resize: vertical; }
+.cookie-banner {
+  position: fixed;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  z-index: 700;
+  max-width: 760px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-hover);
+  padding: 18px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.cookie-banner.show { display: flex; }
+.cookie-copy { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.cookie-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.mini-btn { border: 1px solid var(--border); background: var(--white); color: var(--ink2); border-radius: 8px; padding: 9px 12px; cursor: pointer; font-family: 'Outfit', sans-serif; }
+.mini-btn.primary { background: var(--ink); color: white; border-color: var(--ink); }
+.skeleton-card {
+  height: 190px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: linear-gradient(90deg, var(--white), var(--border2), var(--white));
+  background-size: 240% 100%;
+  animation: shimmer 1.2s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes shimmer { to { background-position: -240% 0; } }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s cubic-bezier(.22,1,.36,1), transform .65s cubic-bezier(.22,1,.36,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* CINEMATIC INTRO */
 .intro-overlay {
@@ -966,6 +1093,8 @@ footer {
   .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
   footer { flex-direction: column; gap: 12px; text-align: center; }
   .history-drawer { width: 100%; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .cookie-banner { flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
@@ -997,7 +1126,7 @@ footer {
 <nav>
   <div class="nav-logo">Talent<span>Sift</span></div>
   <div class="nav-right">
-    <button class="nav-history-btn" onclick="openHistory()">📋 History</button>
+    <button class="nav-history-btn" onclick="openHistory()" title="View previous resume analyses">📋 History</button>
     <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">{{ (user.name or user.email or '?')[:1] | upper | e }}</div>
       <div>
@@ -1005,6 +1134,7 @@ footer {
         <div class="nav-plan" id="navPlan">Free</div>
       </div>
     </div>
+    <button class="nav-history-btn" onclick="openPricing()" title="Upgrade plan">💳 Plans</button>
     <button class="nav-logout" onclick="window.location.href='/logout'" title="Logout">⎋ Sign Out</button>
   </div>
 </nav>
@@ -1032,7 +1162,7 @@ footer {
 <div class="section-divider"></div>
 
 <!-- APP -->
-<section class="app-section" id="app">
+<section class="app-section reveal" id="app">
   <div class="section-header">
     <div class="section-eyebrow">Step 01</div>
     <h2 class="section-title">Set your criteria,<br><strong>let AI do the rest.</strong></h2>
@@ -1045,7 +1175,7 @@ footer {
       <div class="usage-track"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
     </div>
     <div class="usage-count"><strong id="usageUsed">0</strong> / <span id="usageLimit">3</span> analyses today</div>
-    <button class="upgrade-btn" onclick="showToast('Upgrade plans coming soon! 🚀', 'success')">Upgrade ↗</button>
+    <button class="upgrade-btn" onclick="openPricing()">Upgrade ↗</button>
   </div>
 
   <div class="input-grid">
@@ -1099,8 +1229,52 @@ footer {
 <!-- FOOTER -->
 <footer>
   <div class="footer-brand">Talent<span>Sift</span></div>
-  <div class="footer-tech">Cloud-powered · Instant Analysis · Resume Intelligence</div>
+  <div class="footer-tech">
+    <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a> ·
+    <a href="mailto:__SUPPORT_EMAIL__">Support</a>
+  </div>
 </footer>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModals()"></div>
+<div class="modal" id="pricingModal" role="dialog" aria-modal="true" aria-labelledby="pricingTitle">
+  <div class="modal-head">
+    <div>
+      <div class="modal-title" id="pricingTitle">Choose a plan</div>
+      <div class="modal-sub">Razorpay checkout is ready for test mode while account approval is pending.</div>
+    </div>
+    <button class="modal-close" onclick="closeModals()">×</button>
+  </div>
+  <div class="pricing-grid" id="pricingGrid"></div>
+</div>
+
+<div class="modal" id="feedbackModal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+  <div class="modal-head">
+    <div>
+      <div class="modal-title" id="feedbackTitle">Send feedback</div>
+      <div class="modal-sub">Report a bug, request a feature, or ask for help.</div>
+    </div>
+    <button class="modal-close" onclick="closeModals()">×</button>
+  </div>
+  <div class="feedback-form">
+    <select id="feedbackKind">
+      <option value="support">Support request</option>
+      <option value="bug">Bug report</option>
+      <option value="feature">Feature request</option>
+    </select>
+    <textarea id="feedbackMessage" placeholder="Tell us what happened or what you need..."></textarea>
+    <button class="btn-primary" onclick="submitFeedback()">Send message</button>
+  </div>
+</div>
+
+<button class="feedback-fab" onclick="openFeedback()" title="Support and bug report">?</button>
+
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-copy">TalentSift uses essential cookies for login and optional analytics to improve the product. See our <a href="/cookies">Cookie Policy</a>.</div>
+  <div class="cookie-actions">
+    <button class="mini-btn" onclick="setCookieConsent('essential')">Essential only</button>
+    <button class="mini-btn primary" onclick="setCookieConsent('all')">Accept all</button>
+  </div>
+</div>
 
 <svg width="0" height="0" style="position:absolute">
   <defs>
@@ -1112,6 +1286,10 @@ footer {
 </svg>
 
 <script>
+const APP_CONFIG = __PUBLIC_CONFIG__;
+document.getElementById('navPlan').textContent =
+  (APP_CONFIG.current_plan || 'free').charAt(0).toUpperCase() + (APP_CONFIG.current_plan || 'free').slice(1);
+const INITIAL_PLAN_LIMIT = (APP_CONFIG.limits && APP_CONFIG.limits[APP_CONFIG.current_plan]) || 3;
 // CINEMATIC INTRO
 (function() {
   const overlay = document.getElementById('introOverlay');
@@ -1185,6 +1363,129 @@ function showToast(message, type = 'error') {
   }, 4500);
 }
 
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[ch]));
+}
+
+// REVEAL ANIMATION + PAGE TRACKING
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal, .input-card, .usage-bar-wrap').forEach(el => revealObserver.observe(el));
+
+fetch('/events', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ event_name: 'page_view', metadata: { path: location.pathname } })
+}).catch(() => {});
+
+// COOKIE CONSENT
+const consent = localStorage.getItem('ts_cookie_consent');
+if (!consent) document.getElementById('cookieBanner').classList.add('show');
+function setCookieConsent(value) {
+  localStorage.setItem('ts_cookie_consent', value);
+  document.getElementById('cookieBanner').classList.remove('show');
+  showToast(value === 'all' ? 'Analytics cookies enabled.' : 'Essential cookies only.', 'success');
+}
+
+// MODALS / PRICING / FEEDBACK
+function openModal(id) {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById(id).classList.add('open');
+}
+function closeModals() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('open'));
+}
+function openPricing() {
+  renderPricing();
+  openModal('pricingModal');
+}
+function renderPricing() {
+  const grid = document.getElementById('pricingGrid');
+  const plans = APP_CONFIG.plans || {};
+  grid.innerHTML = Object.entries(plans).map(([key, plan]) => `
+    <div class="price-card">
+      <div class="price-name">${esc(plan.name)}</div>
+      <div class="price-amount">${esc(plan.display)}</div>
+      <div class="price-note">per month · ${plan.limit} analyses/day</div>
+      <ul class="price-list">
+        <li>Higher daily analysis limits</li>
+        <li>Saved analysis history</li>
+        <li>Priority resume processing</li>
+        <li>Email support</li>
+      </ul>
+      <button class="price-btn" onclick="startCheckout('${key}')">${APP_CONFIG.current_plan === key ? 'Current plan' : 'Upgrade'}</button>
+    </div>
+  `).join('');
+}
+async function startCheckout(plan) {
+  if (!APP_CONFIG.razorpay_key_id) {
+    showToast('Razorpay is in review. Add live/test keys in Railway when approved.', 'error');
+    return;
+  }
+  try {
+    const res = await fetch('/billing/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Could not start checkout.');
+    const options = {
+      key: data.key_id,
+      amount: data.order.amount,
+      currency: data.order.currency,
+      name: 'TalentSift',
+      description: `${data.plan} subscription`,
+      order_id: data.order.id,
+      handler: async response => {
+        const verify = await fetch('/billing/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...response, plan })
+        });
+        const verified = await verify.json();
+        if (verified.success) {
+          showToast('Payment verified. Plan upgraded.', 'success');
+          document.getElementById('navPlan').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+          updateUsageBar(todayUsed, verified.limit || planLimit);
+          closeModals();
+        } else {
+          showToast(verified.error || 'Payment verification failed.');
+        }
+      },
+      modal: { ondismiss: () => showToast('Checkout closed before payment.', 'error') }
+    };
+    new Razorpay(options).open();
+  } catch (e) {
+    showToast(e.message || 'Payment flow could not start.');
+  }
+}
+function openFeedback() { openModal('feedbackModal'); }
+async function submitFeedback() {
+  const kind = document.getElementById('feedbackKind').value;
+  const message = document.getElementById('feedbackMessage').value.trim();
+  if (!message) { showToast('Please enter a message.'); return; }
+  const res = await fetch('/feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ kind, message, page: location.pathname })
+  });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('feedbackMessage').value = '';
+    closeModals();
+    showToast('Thanks. We received your message.', 'success');
+  } else {
+    showToast(data.error || 'Could not send feedback.');
+  }
+}
+
 // HISTORY DRAWER
 async function openHistory() {
   document.getElementById('historyOverlay').classList.add('open');
@@ -1192,9 +1493,9 @@ async function openHistory() {
   document.body.style.overflow = 'hidden';
 
   try {
-    const res = await fetch('/history');
+    const res = await fetch('/history?page=1&per_page=12');
     const data = await res.json();
-    renderHistory(data);
+    renderHistory(data.items || data);
   } catch(e) {
     document.getElementById('historyContent').innerHTML = '<div class="drawer-empty"><div class="drawer-empty-icon">⚠️</div>Could not load history.</div>';
   }
@@ -1218,7 +1519,7 @@ function renderHistory(items) {
     return `
       <div class="history-item">
         <div class="history-date">${date}</div>
-        <div class="history-jd">${item.job_description}</div>
+        <div class="history-jd">${esc(item.job_description)}</div>
         <div class="history-meta">
           <span>📄 ${item.resume_count} resume${item.resume_count !== 1 ? 's' : ''}</span>
         </div>
@@ -1281,7 +1582,8 @@ function renderChips() {
 
 // Usage tracking (local, resets on page reload)
 let todayUsed = parseInt(localStorage.getItem('ts_used_' + new Date().toDateString()) || '0');
-let planLimit = 3;
+let planLimit = INITIAL_PLAN_LIMIT;
+updateUsageBar(todayUsed, planLimit);
 
 function updateUsageBar(used, limit) {
   todayUsed = used;
@@ -1304,7 +1606,7 @@ async function analyze() {
 
   document.getElementById('analyzeBtn').disabled = true;
   document.getElementById('loading').classList.add('active');
-  document.getElementById('results').innerHTML = '';
+  document.getElementById('results').innerHTML = '<div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>';
 
   if (selectedFiles.length > 10) {
     document.getElementById('loadingTitle').textContent = `Analyzing ${selectedFiles.length} resumes...`;
@@ -1385,8 +1687,8 @@ function renderResults(results) {
       <div class="card-body">
         <div class="cand-info">
           <div class="rank-num">${i===0?'#1 Best Match':i===1?'#2 Runner Up':i===2?'#3 Third Place':'#'+(i+1)+' Candidate'}</div>
-          <div class="cand-name">${r.filename.replace(/\.pdf$/i,'')}</div>
-          <div class="cand-summary">${summary}</div>
+          <div class="cand-name">${esc(r.filename.replace(/\.pdf$/i,''))}</div>
+          <div class="cand-summary">${esc(summary)}</div>
         </div>
         <div class="score-block">
           <div class="score-ring">
@@ -1404,14 +1706,14 @@ function renderResults(results) {
       <div class="skills-row">
         <div>
           <div class="skills-heading">✅ Matching Skills</div>
-          ${(Array.isArray(matching)?matching:[matching]).map(s=>`<span class="skill-pill match">${s}</span>`).join('')}
+          ${(Array.isArray(matching)?matching:[matching]).map(s=>`<span class="skill-pill match">${esc(s)}</span>`).join('')}
         </div>
         <div>
           <div class="skills-heading">❌ Missing Skills</div>
-          ${(Array.isArray(missing)?missing:[missing]).map(s=>`<span class="skill-pill miss">${s}</span>`).join('')}
+          ${(Array.isArray(missing)?missing:[missing]).map(s=>`<span class="skill-pill miss">${esc(s)}</span>`).join('')}
         </div>
       </div>
-      <div class="rec-badge ${recClass}">${recIcon} ${rec}</div>
+      <div class="rec-badge ${recClass}">${recIcon} ${esc(rec)}</div>
     </div>`;
   });
 

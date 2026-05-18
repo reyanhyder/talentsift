@@ -247,6 +247,19 @@ body {
   box-shadow: 0 8px 24px rgba(26,24,20,0.2);
 }
 .btn-submit:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+.btn-oauth {
+  width: 100%;
+  padding: 14px;
+  background: var(--white);
+  color: var(--ink2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+}
 
 .error-msg {
   background: #fef2f2;
@@ -330,10 +343,11 @@ body {
       <span id="btnText">Create Free Account →</span>
       <div class="spinner" id="spinner"></div>
     </button>
+    <button class="btn-oauth" onclick="window.location.href='/auth/google'">Continue with Google</button>
 
     <div class="error-msg" id="errorMsg"></div>
 
-    <p class="terms-txt">By signing up, you agree to our <a href="/privacy">Privacy Policy</a>.<br>Free plan includes 3 analyses per day.</p>
+    <p class="terms-txt">By signing up, you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.<br>Free plan includes 3 analyses per day.</p>
   </div>
 </div>
 
