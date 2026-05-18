@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session, Response
 from groq import Groq
 import cloudinary
 import cloudinary.uploader
 import PyPDF2
 import os
+from html import escape
 from dotenv import load_dotenv
 import io
 import json
@@ -15,6 +16,8 @@ from jinja2 import Undefined
 from flask.json.provider import DefaultJSONProvider
 
 load_dotenv()
+
+DEPLOY_VERSION = "homepage-no-jinja-a8076b1"
 
 class SafeJSONProvider(DefaultJSONProvider):
     def default(self, value):
@@ -33,6 +36,20 @@ def sanitize_for_json(value):
 
 def safe_json_dumps(value, **kwargs):
     return json.dumps(sanitize_for_json(value), **kwargs)
+
+def render_index_html(user):
+    template_path = os.path.join(app.root_path, "templates", "index.html")
+    with open(template_path, "r", encoding="utf-8") as template_file:
+        html = template_file.read()
+
+    display_name = user.get("name") or user.get("email") or "User"
+    avatar = (display_name[:1] or "?").upper()
+
+    return (
+        html
+        .replace("{{ (user.name or user.email or '?')[:1] | upper | e }}", escape(avatar))
+        .replace("{{ user.name or user.email or 'User' }}", escape(display_name))
+    )
 
 app = Flask(__name__)
 app.json = SafeJSONProvider(app)
@@ -173,7 +190,14 @@ def index():
         'email': str(session['user'].get('email', '')),
         'name': str(session['user'].get('name', ''))
     }
-    return render_template("index.html", user=user)
+    return Response(render_index_html(user), mimetype="text/html")
+
+@app.route("/_version")
+def version():
+    return jsonify({
+        "version": DEPLOY_VERSION,
+        "index_uses_jinja": False
+    })
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
