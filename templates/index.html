@@ -999,9 +999,9 @@ footer {
   <div class="nav-right">
     <button class="nav-history-btn" onclick="openHistory()">📋 History</button>
     <div class="nav-user">
-      <div class="nav-avatar" id="navAvatar">?</div>
+      <div class="nav-avatar" id="navAvatar">{{ (user.name or user.email or '?')[:1] | upper | e }}</div>
       <div>
-        <div class="nav-username" id="navUsername">Loading...</div>
+        <div class="nav-username" id="navUsername">{{ user.name or user.email or 'User' }}</div>
         <div class="nav-plan" id="navPlan">Free</div>
       </div>
     </div>
@@ -1112,13 +1112,6 @@ footer {
 </svg>
 
 <script>
-// USER SESSION DATA from Flask
-const USER = {{ user | default({'id': '', 'email': '', 'name': ''}, true) | tojson }};
-
-// Set nav user info
-document.getElementById('navUsername').textContent = USER.name || USER.email;
-document.getElementById('navAvatar').textContent = (USER.name || USER.email)[0].toUpperCase();
-
 // CINEMATIC INTRO
 (function() {
   const overlay = document.getElementById('introOverlay');
