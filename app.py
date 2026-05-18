@@ -57,31 +57,7 @@ def analyze():
             text = extract_text_from_pdf(resume_bytes)
 
             if not text.strip():
-                results.append({
-                    "filename": resume.filename,
-                    "analysis": {
-                        "ats_score": 0,
-                        "matching_skills": [],
-                        "missing_skills": [],
-                        "summary": "This file could not be read. It may be a scanned or image-based PDF. Please upload a text-based resume.",
-                        "recommendation": "Unable to Process"
-                    }
-                })
-                continue
-
-            resume_keywords = ["experience", "education", "skills", "work", "university", "college", "degree", "project", "internship", "certification"]
-            if not any(word in text.lower() for word in resume_keywords):
-                results.append({
-                    "filename": resume.filename,
-                    "analysis": {
-                        "ats_score": 0,
-                        "matching_skills": [],
-                        "missing_skills": [],
-                        "summary": "This does not appear to be a resume. Please upload a valid resume in PDF format.",
-                        "recommendation": "Not a Resume"
-                    }
-                })
-                continue
+                text = "Could not extract text from this PDF."
 
             prompt = (
                 "You are an expert HR recruiter and ATS system.\n\n"
@@ -97,7 +73,12 @@ def analyze():
             )
 
             chat_completion = client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ],
                 model="llama-3.3-70b-versatile",
             )
 
@@ -131,4 +112,4 @@ def analyze():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+   app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

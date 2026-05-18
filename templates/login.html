@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — TalentSift</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf8f5;
+  --white: #ffffff;
+  --ink: #1a1814;
+  --ink2: #3d3a35;
+  --muted: #8c887f;
+  --muted2: #c8c4bc;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --border: #e8e4de;
+  --border2: #f0ece6;
+  --danger: #dc2626;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-lg: 0 4px 6px rgba(0,0,0,0.03), 0 12px 40px rgba(0,0,0,0.1);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* LEFT PANEL */
+.left-panel {
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.left-panel::before {
+  content: '';
+  position: absolute;
+  top: -20%; left: -20%;
+  width: 70%; height: 60%;
+  background: radial-gradient(ellipse, rgba(37,99,235,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.left-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -10%; right: -10%;
+  width: 60%; height: 60%;
+  background: radial-gradient(ellipse, rgba(37,99,235,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.panel-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+.panel-logo span { color: var(--accent); }
+
+.panel-content {
+  position: relative;
+  z-index: 1;
+}
+
+.panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  font-weight: 300;
+  color: white;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.panel-title em { font-style: italic; color: var(--accent); }
+
+.panel-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 380px;
+}
+
+.panel-stats {
+  display: flex;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.pstat { }
+.pstat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 500;
+  color: white;
+  line-height: 1;
+}
+.pstat-lbl {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* RIGHT PANEL */
+.right-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 400px;
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.auth-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.auth-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.auth-sub a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+}
+
+.form-input::placeholder { color: var(--muted2); }
+
+.form-input.error { border-color: var(--danger); }
+
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.01em;
+}
+
+.btn-submit:hover {
+  background: #111;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(26,24,20,0.2);
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.error-msg {
+  background: #fef2f2;
+  border: 1px solid rgba(220,38,38,0.2);
+  color: var(--danger);
+  font-size: 13px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+  display: none;
+}
+
+.error-msg.show { display: block; }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 28px 0;
+}
+
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-txt { font-size: 12px; color: var(--muted); }
+
+.free-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-light);
+  border: 1px solid rgba(37,99,235,0.15);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+}
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: none;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media(max-width: 768px) {
+  body { grid-template-columns: 1fr; }
+  .left-panel { display: none; }
+  .right-panel { padding: 32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="left-panel">
+  <div class="panel-logo">Talent<span>Sift</span></div>
+  <div class="panel-content">
+    <h1 class="panel-title">Hire the <em>right</em> person.<br>Every time.</h1>
+    <p class="panel-desc">AI-powered resume screening and candidate ranking. Upload resumes, paste a job description, get instant ATS scores and recommendations.</p>
+  </div>
+  <div class="panel-stats">
+    <div class="pstat">
+      <div class="pstat-val">100</div>
+      <div class="pstat-lbl">ATS Score Scale</div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-val">∞</div>
+      <div class="pstat-lbl">Resumes at Once</div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-val">AI</div>
+      <div class="pstat-lbl">Powered Ranking</div>
+    </div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="auth-box">
+    <div class="free-badge">✦ Free to start — no credit card needed</div>
+    <h2 class="auth-title">Welcome back</h2>
+    <p class="auth-sub">Don't have an account? <a href="/signup">Sign up free</a></p>
+
+    <div class="form-group">
+      <label class="form-label" for="email">Email</label>
+      <input class="form-input" type="email" id="email" placeholder="you@company.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+
+    <button class="btn-submit" id="loginBtn" onclick="handleLogin()">
+      <span id="btnText">Sign In →</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+
+async function handleLogin() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('loginBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+  const errorMsg = document.getElementById('errorMsg');
+
+  if (!email || !password) {
+    showError('Please enter your email and password.');
+    return;
+  }
+
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  btnText.textContent = 'Signing in...';
+  errorMsg.classList.remove('show');
+
+  try {
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = '/';
+    } else {
+      showError(data.error || 'Login failed. Please try again.');
+    }
+  } catch(e) {
+    showError('Connection error. Please try again.');
+  }
+
+  btn.disabled = false;
+  spinner.style.display = 'none';
+  btnText.textContent = 'Sign In →';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+</script>
+</body>
+</html>

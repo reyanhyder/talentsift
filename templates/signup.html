@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account — TalentSift</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #faf8f5;
+  --white: #ffffff;
+  --ink: #1a1814;
+  --ink2: #3d3a35;
+  --muted: #8c887f;
+  --muted2: #c8c4bc;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --accent2: #059669;
+  --accent2-light: #ecfdf5;
+  --border: #e8e4de;
+  --danger: #dc2626;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  -webkit-font-smoothing: antialiased;
+}
+
+.left-panel {
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.left-panel::before {
+  content: '';
+  position: absolute;
+  top: -20%; left: -20%;
+  width: 70%; height: 60%;
+  background: radial-gradient(ellipse, rgba(37,99,235,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.left-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -10%; right: -10%;
+  width: 60%; height: 60%;
+  background: radial-gradient(ellipse, rgba(5,150,105,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.panel-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+.panel-logo span { color: var(--accent); }
+
+.panel-content { position: relative; z-index: 1; }
+
+.panel-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 300;
+  color: white;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+.panel-title em { font-style: italic; color: var(--accent); }
+.panel-desc {
+  font-size: 15px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 380px;
+  margin-bottom: 32px;
+}
+
+.feature-list { position: relative; z-index: 1; }
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.feature-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.feature-txt {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+
+.panel-footer { position: relative; z-index: 1; }
+.panel-footer-txt {
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.04em;
+}
+
+.right-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 420px;
+  animation: fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to { opacity:1; transform: translateY(0); }
+}
+
+.auth-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.auth-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 36px;
+}
+.auth-sub a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink2);
+  margin-bottom: 8px;
+}
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  transition: all 0.2s;
+}
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+}
+.form-input::placeholder { color: var(--muted2); }
+
+.plan-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.plan-card {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--white);
+  position: relative;
+}
+.plan-card:hover { border-color: var(--accent); }
+.plan-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.plan-card input[type="radio"] { display: none; }
+.plan-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.plan-price {
+  font-size: 12px;
+  color: var(--muted);
+}
+.plan-badge {
+  position: absolute;
+  top: -8px; right: 10px;
+  background: var(--accent);
+  color: white;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 100px;
+  text-transform: uppercase;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-submit:hover {
+  background: #111;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(26,24,20,0.2);
+}
+.btn-submit:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.error-msg {
+  background: #fef2f2;
+  border: 1px solid rgba(220,38,38,0.2);
+  color: var(--danger);
+  font-size: 13px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+  display: none;
+}
+.error-msg.show { display: block; }
+
+.terms-txt {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+.terms-txt a { color: var(--accent); text-decoration: none; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media(max-width: 768px) {
+  body { grid-template-columns: 1fr; }
+  .left-panel { display: none; }
+  .right-panel { padding: 32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div class="left-panel">
+  <div class="panel-logo">Talent<span>Sift</span></div>
+  <div class="panel-content">
+    <h1 class="panel-title">Start hiring <em>smarter</em> today.</h1>
+    <p class="panel-desc">Join recruiters and hiring managers using TalentSift to screen candidates 10x faster with AI-powered ATS scoring.</p>
+  </div>
+  <div class="feature-list">
+    <div class="feature-item"><div class="feature-dot"></div><div class="feature-txt">Instant ATS scoring on 100-point scale</div></div>
+    <div class="feature-item"><div class="feature-dot"></div><div class="feature-txt">Skill gap analysis — matching & missing</div></div>
+    <div class="feature-item"><div class="feature-dot"></div><div class="feature-txt">Rank unlimited candidates simultaneously</div></div>
+    <div class="feature-item"><div class="feature-dot"></div><div class="feature-txt">Full analysis history saved to your account</div></div>
+    <div class="feature-item"><div class="feature-dot"></div><div class="feature-txt">Cloud storage for all uploaded resumes</div></div>
+  </div>
+  <div class="panel-footer">
+    <div class="panel-footer-txt">Free plan · No credit card required</div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="auth-box">
+    <h2 class="auth-title">Create your account</h2>
+    <p class="auth-sub">Already have an account? <a href="/login">Sign in</a></p>
+
+    <div class="form-group">
+      <label class="form-label" for="name">Full Name</label>
+      <input class="form-input" type="text" id="name" placeholder="Your name" autocomplete="name">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="email">Work Email</label>
+      <input class="form-input" type="email" id="email" placeholder="you@company.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-input" type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password">
+    </div>
+
+    <button class="btn-submit" id="signupBtn" onclick="handleSignup()">
+      <span id="btnText">Create Free Account →</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+    <p class="terms-txt">By signing up, you agree to our <a href="/privacy">Privacy Policy</a>.<br>Free plan includes 3 analyses per day.</p>
+  </div>
+</div>
+
+<script>
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSignup();
+});
+
+async function handleSignup() {
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('signupBtn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+  const errorMsg = document.getElementById('errorMsg');
+
+  if (!name || !email || !password) {
+    showError('Please fill in all fields.');
+    return;
+  }
+  if (password.length < 8) {
+    showError('Password must be at least 8 characters.');
+    return;
+  }
+
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  btnText.textContent = 'Creating account...';
+  errorMsg.classList.remove('show');
+
+  try {
+    const res = await fetch('/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    if (data.success) {
+      window.location.href = '/';
+    } else {
+      showError(data.error || 'Signup failed. Please try again.');
+    }
+  } catch(e) {
+    showError('Connection error. Please try again.');
+  }
+
+  btn.disabled = false;
+  spinner.style.display = 'none';
+  btnText.textContent = 'Create Free Account →';
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+</script>
+</body>
+</html>
