@@ -7,23 +7,23 @@
 <meta name="description" content="TalentSift legal, privacy, and compliance information.">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root { --cream:#faf8f5; --white:#fff; --ink:#1a1814; --ink2:#3d3a35; --muted:#7f7a70; --accent:#2563eb; --border:#e8e4de; }
+:root { --font-display:'Recoletta','Recoleta','Cormorant Garamond',Georgia,serif; --font-body:'Berthold Akzidenz Grotesk','Berthold','Outfit',Arial,sans-serif; --font-signature:'Ambila','Recoletta','Cormorant Garamond',Georgia,serif; --cream:#fbf8f2; --white:#fff; --ink:#17130f; --ink2:#3c352c; --muted:#8a8175; --accent:#245cff; --signature:#a36a2f; --border:#e7dfd2; }
 * { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Outfit',sans-serif; background:var(--cream); color:var(--ink); line-height:1.75; -webkit-font-smoothing:antialiased; }
+body { font-family:var(--font-body); background:var(--cream); color:var(--ink); line-height:1.75; -webkit-font-smoothing:antialiased; }
 nav { height:68px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; border-bottom:1px solid var(--border); background:rgba(250,248,245,.9); position:sticky; top:0; backdrop-filter:blur(18px); }
-.logo { font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:600; color:var(--ink); text-decoration:none; }
+.logo { font-family:var(--font-display); font-size:1.45rem; font-weight:600; color:var(--ink); text-decoration:none; }
 .logo span { color:var(--accent); }
 .back { color:var(--muted); text-decoration:none; font-size:14px; }
 main { max-width:860px; margin:0 auto; padding:72px 24px 96px; }
-.eyebrow { font-size:12px; color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-weight:600; margin-bottom:16px; }
-h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.5rem,7vw,4.5rem); line-height:1; margin-bottom:20px; letter-spacing:-.03em; }
+.eyebrow { font-size:12px; color:var(--accent); text-transform:uppercase; letter-spacing:0; font-weight:600; margin-bottom:16px; }
+h1 { font-family:var(--font-display); font-size:clamp(2.5rem,7vw,4.5rem); line-height:1; margin-bottom:20px; letter-spacing:0; }
 .updated { color:var(--muted); font-size:14px; margin-bottom:40px; }
 section { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:16px; }
 h2 { font-size:1.05rem; margin-bottom:10px; color:var(--ink2); }
 p, li { color:var(--muted); font-size:15px; }
 ul { padding-left:20px; margin-top:10px; }
 a { color:var(--accent); }
-.creator-mark { opacity:.72; }
+.creator-mark { font-family:var(--font-signature); color:var(--signature); font-size:15px; opacity:1; }
 footer { border-top:1px solid var(--border); padding:32px 48px; color:var(--muted); font-size:13px; }
 @media(max-width:700px){ nav, footer{padding-left:24px;padding-right:24px;} section{padding:22px;} }
 </style>

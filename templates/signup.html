@@ -7,22 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream: #faf8f5;
+  --font-display: 'Recoletta', 'Recoleta', 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Berthold Akzidenz Grotesk', 'Berthold', 'Outfit', Arial, sans-serif;
+  --font-signature: 'Ambila', 'Recoletta', 'Cormorant Garamond', Georgia, serif;
+  --cream: #fbf8f2;
   --white: #ffffff;
-  --ink: #1a1814;
-  --ink2: #3d3a35;
-  --muted: #8c887f;
+  --ink: #17130f;
+  --ink2: #3c352c;
+  --muted: #8a8175;
   --muted2: #c8c4bc;
-  --accent: #2563eb;
-  --accent-light: #eff6ff;
+  --accent: #245cff;
+  --accent-light: #eef4ff;
   --accent2: #059669;
   --accent2-light: #ecfdf5;
-  --border: #e8e4de;
+  --border: #e7dfd2;
   --danger: #dc2626;
+  --success: #047857;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   background: var(--cream);
   color: var(--ink);
   min-height: 100vh;
@@ -32,7 +36,7 @@ body {
 }
 
 .left-panel {
-  background: var(--ink);
+  background: linear-gradient(135deg, #11100d 0%, #17130f 58%, #101721 100%);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -43,25 +47,26 @@ body {
 .left-panel::before {
   content: '';
   position: absolute;
-  top: -20%; left: -20%;
-  width: 70%; height: 60%;
-  background: radial-gradient(ellipse, rgba(37,99,235,0.2) 0%, transparent 70%);
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(120deg, rgba(0,0,0,.8), transparent 68%);
   pointer-events: none;
 }
 .left-panel::after {
   content: '';
   position: absolute;
-  bottom: -10%; right: -10%;
-  width: 60%; height: 60%;
-  background: radial-gradient(ellipse, rgba(5,150,105,0.1) 0%, transparent 70%);
+  inset: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
   pointer-events: none;
 }
 .panel-logo {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: 1.8rem;
   font-weight: 600;
   color: white;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   position: relative;
   z-index: 1;
 }
@@ -70,12 +75,12 @@ body {
 .panel-content { position: relative; z-index: 1; }
 
 .panel-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 300;
   color: white;
   line-height: 1.1;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   margin-bottom: 20px;
 }
 .panel-title em { font-style: italic; color: var(--accent); }
@@ -110,7 +115,7 @@ body {
 .panel-footer-txt {
   font-size: 12px;
   color: rgba(255,255,255,0.25);
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 
 .right-panel {
@@ -132,11 +137,11 @@ body {
 }
 
 .auth-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: 2.2rem;
   font-weight: 500;
   color: var(--ink);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin-bottom: 8px;
 }
 .auth-sub {
@@ -155,7 +160,7 @@ body {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--ink2);
   margin-bottom: 8px;
@@ -166,11 +171,40 @@ body {
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--ink);
   outline: none;
   transition: all 0.2s;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field .form-input {
+  padding-right: 76px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid var(--border);
+  background: #fbfaf7;
+  color: var(--ink2);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .form-input:focus {
   border-color: var(--accent);
@@ -217,7 +251,7 @@ body {
   color: white;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   padding: 2px 8px;
   border-radius: 100px;
   text-transform: uppercase;
@@ -230,7 +264,7 @@ body {
   color: white;
   border: none;
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -254,11 +288,16 @@ body {
   color: var(--ink2);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 12px;
+}
+.btn-oauth:hover {
+  border-color: rgba(36,92,255,0.35);
+  box-shadow: 0 10px 26px rgba(36,92,255,0.08);
+  transform: translateY(-1px);
 }
 
 .error-msg {
@@ -272,6 +311,12 @@ body {
   display: none;
 }
 .error-msg.show { display: block; }
+
+.error-msg.success {
+  background: #ecfdf5;
+  border-color: rgba(4,120,87,0.2);
+  color: var(--success);
+}
 
 .terms-txt {
   font-size: 12px;
@@ -336,14 +381,17 @@ body {
 
     <div class="form-group">
       <label class="form-label" for="password">Password</label>
-      <input class="form-input" type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password">
+      <div class="password-field">
+        <input class="form-input" type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password">
+        <button class="password-toggle" type="button" onclick="togglePassword('password', this)" aria-label="Show password">Show</button>
+      </div>
     </div>
 
     <button class="btn-submit" id="signupBtn" onclick="handleSignup()">
       <span id="btnText">Create Free Account →</span>
       <div class="spinner" id="spinner"></div>
     </button>
-    <button class="btn-oauth" onclick="window.location.href='/auth/google'">Continue with Google</button>
+    <button class="btn-oauth" onclick="window.location.href='/auth/google?screen=signup'">Continue with Google</button>
 
     <div class="error-msg" id="errorMsg"></div>
 
@@ -352,9 +400,29 @@ body {
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const oauthError = params.get('oauth_error');
+  if (oauthError === 'google_not_enabled') {
+    showError('Google sign-up is not enabled in Supabase yet. Create an account with email for now, then enable Google provider in Supabase to activate this button.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (oauthError === 'google_unavailable') {
+    showError('Google sign-up is temporarily unavailable. Use email and password or try again in a moment.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') handleSignup();
 });
+
+function togglePassword(inputId, button) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  button.textContent = isHidden ? 'Hide' : 'Show';
+  button.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+}
 
 async function handleSignup() {
   const name = document.getElementById('name').value.trim();
@@ -387,16 +455,7 @@ async function handleSignup() {
     });
     const data = await res.json();
     if (data.success) {
-      document.querySelector('.auth-box').innerHTML = `
-        <div style="text-align:center;padding:40px 0">
-          <div style="font-size:48px;margin-bottom:16px">📬</div>
-          <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px">Check your email</h2>
-          <p style="color:var(--muted);font-size:14px;line-height:1.7">
-            We sent a verification link to <strong>${email}</strong>.<br>
-            Click it to activate your account, then <a href="/login" style="color:var(--accent)">sign in</a>.
-          </p>
-        </div>
-      `;
+      showSignupSuccess(email);
     } else {
       showError(data.error || 'Signup failed. Please try again.');
     }
@@ -409,8 +468,48 @@ async function handleSignup() {
   btnText.textContent = 'Create Free Account →';
 }
 
+function showSignupSuccess(email) {
+  const box = document.querySelector('.auth-box');
+  box.textContent = '';
+  const wrap = document.createElement('div');
+  wrap.style.textAlign = 'center';
+  wrap.style.padding = '40px 0';
+
+  const icon = document.createElement('div');
+  icon.textContent = 'Mail sent';
+  icon.style.color = 'var(--accent)';
+  icon.style.fontWeight = '700';
+  icon.style.marginBottom = '16px';
+
+  const title = document.createElement('h2');
+  title.textContent = 'Check your email';
+  title.style.fontFamily = 'var(--font-display)';
+  title.style.fontSize = '2rem';
+  title.style.marginBottom = '12px';
+
+  const copy = document.createElement('p');
+  copy.style.color = 'var(--muted)';
+  copy.style.fontSize = '14px';
+  copy.style.lineHeight = '1.7';
+  copy.append('We sent a verification link to ');
+  const strong = document.createElement('strong');
+  strong.textContent = email;
+  copy.appendChild(strong);
+  copy.append('. Click it to activate your account, then ');
+  const link = document.createElement('a');
+  link.href = '/login';
+  link.textContent = 'sign in';
+  link.style.color = 'var(--accent)';
+  copy.appendChild(link);
+  copy.append('.');
+
+  wrap.append(icon, title, copy);
+  box.appendChild(wrap);
+}
+
 function showError(msg) {
   const el = document.getElementById('errorMsg');
+  el.classList.remove('success');
   el.textContent = msg;
   el.classList.add('show');
 }

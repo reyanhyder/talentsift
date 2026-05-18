@@ -7,23 +7,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --cream: #faf8f5;
+  --font-display: 'Recoletta', 'Recoleta', 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Berthold Akzidenz Grotesk', 'Berthold', 'Outfit', Arial, sans-serif;
+  --font-signature: 'Ambila', 'Recoletta', 'Cormorant Garamond', Georgia, serif;
+  --cream: #fbf8f2;
   --white: #ffffff;
-  --ink: #1a1814;
-  --ink2: #3d3a35;
-  --muted: #8c887f;
+  --ink: #17130f;
+  --ink2: #3c352c;
+  --muted: #8a8175;
   --muted2: #c8c4bc;
-  --accent: #2563eb;
-  --accent-light: #eff6ff;
-  --border: #e8e4de;
+  --accent: #245cff;
+  --accent-light: #eef4ff;
+  --signature: #a36a2f;
+  --border: #e7dfd2;
   --border2: #f0ece6;
   --danger: #dc2626;
+  --success: #047857;
   --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
   --shadow-lg: 0 4px 6px rgba(0,0,0,0.03), 0 12px 40px rgba(0,0,0,0.1);
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   background: var(--cream);
   color: var(--ink);
   min-height: 100vh;
@@ -34,7 +39,7 @@ body {
 
 /* LEFT PANEL */
 .left-panel {
-  background: var(--ink);
+  background: linear-gradient(135deg, #11100d 0%, #17130f 58%, #101721 100%);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -46,27 +51,28 @@ body {
 .left-panel::before {
   content: '';
   position: absolute;
-  top: -20%; left: -20%;
-  width: 70%; height: 60%;
-  background: radial-gradient(ellipse, rgba(37,99,235,0.2) 0%, transparent 70%);
+  inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(120deg, rgba(0,0,0,.8), transparent 68%);
   pointer-events: none;
 }
 
 .left-panel::after {
   content: '';
   position: absolute;
-  bottom: -10%; right: -10%;
-  width: 60%; height: 60%;
-  background: radial-gradient(ellipse, rgba(37,99,235,0.1) 0%, transparent 70%);
+  inset: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
   pointer-events: none;
 }
 
 .panel-logo {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: 1.8rem;
   font-weight: 600;
   color: white;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   position: relative;
   z-index: 1;
 }
@@ -78,12 +84,12 @@ body {
 }
 
 .panel-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: clamp(2.5rem, 5vw, 3.8rem);
   font-weight: 300;
   color: white;
   line-height: 1.1;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   margin-bottom: 20px;
 }
 
@@ -106,7 +112,7 @@ body {
 
 .pstat { }
 .pstat-val {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 500;
   color: white;
@@ -115,7 +121,7 @@ body {
 .pstat-lbl {
   font-size: 11px;
   color: rgba(255,255,255,0.35);
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
   margin-top: 4px;
 }
@@ -140,11 +146,11 @@ body {
 }
 
 .auth-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-display);
   font-size: 2.2rem;
   font-weight: 500;
   color: var(--ink);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   margin-bottom: 8px;
 }
 
@@ -168,7 +174,7 @@ body {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--ink2);
   margin-bottom: 8px;
@@ -180,11 +186,40 @@ body {
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   color: var(--ink);
   outline: none;
   transition: all 0.2s;
+}
+
+.password-field {
+  position: relative;
+}
+
+.password-field .form-input {
+  padding-right: 76px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid var(--border);
+  background: #fbfaf7;
+  color: var(--ink2);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .form-input:focus {
@@ -203,7 +238,7 @@ body {
   color: white;
   border: none;
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -213,7 +248,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
 }
 
 .btn-submit:hover {
@@ -236,11 +271,16 @@ body {
   color: var(--ink2);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 14px;
+}
+.btn-oauth:hover {
+  border-color: rgba(36,92,255,0.35);
+  box-shadow: 0 10px 26px rgba(36,92,255,0.08);
+  transform: translateY(-1px);
 }
 .link-row {
   display: flex;
@@ -255,7 +295,7 @@ body {
   border: none;
   text-decoration: none;
   cursor: pointer;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-body);
 }
 
 .error-msg {
@@ -267,6 +307,29 @@ body {
   border-radius: 10px;
   margin-top: 16px;
   display: none;
+}
+
+.error-msg.success {
+  background: #ecfdf5;
+  border-color: rgba(4,120,87,0.2);
+  color: var(--success);
+}
+
+.reset-action {
+  margin-top: 10px;
+  border: 1px solid rgba(36,92,255,0.25);
+  background: var(--white);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reset-action:hover {
+  background: var(--accent-light);
 }
 
 .error-msg.show { display: block; }
@@ -350,14 +413,17 @@ body {
 
     <div class="form-group">
       <label class="form-label" for="password">Password</label>
-      <input class="form-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+      <div class="password-field">
+        <input class="form-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        <button class="password-toggle" type="button" onclick="togglePassword('password', this)" aria-label="Show password">Show</button>
+      </div>
     </div>
 
     <button class="btn-submit" id="loginBtn" onclick="handleLogin()">
       <span id="btnText">Sign In →</span>
       <div class="spinner" id="spinner"></div>
     </button>
-    <button class="btn-oauth" onclick="window.location.href='/auth/google'">Continue with Google</button>
+    <button class="btn-oauth" onclick="window.location.href='/auth/google?screen=login'">Continue with Google</button>
     <div class="link-row">
       <button onclick="handlePasswordReset()">Forgot password?</button>
       <a href="/privacy">Privacy</a>
@@ -368,9 +434,29 @@ body {
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const oauthError = params.get('oauth_error');
+  if (oauthError === 'google_not_enabled') {
+    showError('Google sign-in is not enabled in Supabase yet. Use email and password for now, then enable Google provider in Supabase to activate this button.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else if (oauthError === 'google_unavailable') {
+    showError('Google sign-in is temporarily unavailable. Use email and password or try again in a moment.');
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter') handleLogin();
 });
+
+function togglePassword(inputId, button) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  button.textContent = isHidden ? 'Hide' : 'Show';
+  button.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+}
 
 async function handleLogin() {
   const email = document.getElementById('email').value.trim();
@@ -400,7 +486,8 @@ async function handleLogin() {
     if (data.success) {
       window.location.href = '/';
     } else {
-      showError(data.error || 'Login failed. Please try again.');
+      const message = data.error || 'Login failed. Please try again.';
+      showError(message, message.toLowerCase().includes('password') || res.status === 401);
     }
   } catch(e) {
     showError('Connection error. Please try again.');
@@ -424,16 +511,34 @@ async function handlePasswordReset() {
       body: JSON.stringify({ email })
     });
     const data = await res.json();
-    showError(data.message || 'If the email exists, a reset link has been sent.');
+    showSuccess(data.message || 'If the email exists, a reset link has been sent.');
   } catch(e) {
     showError('Could not send reset email. Try again.');
   }
 }
 
-function showError(msg) {
+function showError(msg, showReset = false) {
+  const el = document.getElementById('errorMsg');
+  el.classList.remove('success');
+  el.textContent = '';
+  const text = document.createElement('div');
+  text.textContent = msg;
+  el.appendChild(text);
+  if (showReset) {
+    const reset = document.createElement('button');
+    reset.type = 'button';
+    reset.className = 'reset-action';
+    reset.textContent = 'Reset password';
+    reset.onclick = handlePasswordReset;
+    el.appendChild(reset);
+  }
+  el.classList.add('show');
+}
+
+function showSuccess(msg) {
   const el = document.getElementById('errorMsg');
   el.textContent = msg;
-  el.classList.add('show');
+  el.classList.add('show', 'success');
 }
 </script>
 </body>

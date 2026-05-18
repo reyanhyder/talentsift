@@ -26,6 +26,7 @@ SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL", "mdabdullahhyderhyder@gmail.com")
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
+GOOGLE_OAUTH_ENABLED = os.getenv("GOOGLE_OAUTH_ENABLED", "").lower() in ("1", "true", "yes", "on")
 
 class SafeJSONProvider(DefaultJSONProvider):
     def default(self, value):
@@ -273,7 +274,8 @@ def version():
     return jsonify({
         "version": DEPLOY_VERSION,
         "index_uses_jinja": False,
-        "payments_ready": bool(RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET)
+        "payments_ready": bool(RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET),
+        "google_oauth_enabled": GOOGLE_OAUTH_ENABLED
     })
 
 @app.route("/privacy")
@@ -338,6 +340,12 @@ def login():
 
 @app.route("/auth/google")
 def google_login():
+    screen = request.args.get("screen", "login")
+    error_endpoint = "signup" if screen == "signup" else "login"
+
+    if not GOOGLE_OAUTH_ENABLED:
+        return redirect(url_for(error_endpoint, oauth_error="google_not_enabled"))
+
     try:
         redirect_to = f"{BASE_URL}/"
         res = supabase.auth.sign_in_with_oauth({
@@ -349,7 +357,7 @@ def google_login():
             return redirect(oauth_url)
     except Exception as e:
         print("Google OAuth error:", e)
-    return redirect(url_for("login"))
+    return redirect(url_for(error_endpoint, oauth_error="google_unavailable"))
 
 @app.route("/password-reset", methods=["POST"])
 def password_reset():
