@@ -22,7 +22,7 @@ load_dotenv()
 
 DEPLOY_VERSION = "launch-checklist-2026-05-18-1825"
 BASE_URL = os.getenv("BASE_URL", "https://talentsift-production.up.railway.app").rstrip("/")
-SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL", "support@talentsift.com")
+SUPPORT_EMAIL = os.getenv("SUPPORT_EMAIL", "mdabdullahhyderhyder@gmail.com")
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")

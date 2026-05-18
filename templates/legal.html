@@ -23,6 +23,7 @@ h2 { font-size:1.05rem; margin-bottom:10px; color:var(--ink2); }
 p, li { color:var(--muted); font-size:15px; }
 ul { padding-left:20px; margin-top:10px; }
 a { color:var(--accent); }
+.creator-mark { opacity:.72; }
 footer { border-top:1px solid var(--border); padding:32px 48px; color:var(--muted); font-size:13px; }
 @media(max-width:700px){ nav, footer{padding-left:24px;padding-right:24px;} section{padding:22px;} }
 </style>
@@ -60,6 +61,6 @@ footer { border-top:1px solid var(--border); padding:32px 48px; color:var(--mute
   <section><h2>Managing Consent</h2><p>You can clear browser storage or contact <a href="mailto:{{ support_email }}">{{ support_email }}</a> for help with privacy choices.</p></section>
   {% endif %}
 </main>
-<footer>TalentSift · {{ base_url }} · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a></footer>
+<footer>TalentSift · {{ base_url }} · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a> · <a href="/cookies">Cookies</a> · <span class="creator-mark">Built by Abdullah Hyder</span></footer>
 </body>
 </html>
