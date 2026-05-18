@@ -17,7 +17,7 @@ from flask.json.provider import DefaultJSONProvider
 
 load_dotenv()
 
-DEPLOY_VERSION = "homepage-no-jinja-a8076b1"
+DEPLOY_VERSION = "homepage-no-jinja-2026-05-18-1526"
 
 class SafeJSONProvider(DefaultJSONProvider):
     def default(self, value):
