@@ -373,7 +373,16 @@ async function handleSignup() {
     });
     const data = await res.json();
     if (data.success) {
-      window.location.href = '/';
+      document.querySelector('.auth-box').innerHTML = `
+        <div style="text-align:center;padding:40px 0">
+          <div style="font-size:48px;margin-bottom:16px">📬</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:12px">Check your email</h2>
+          <p style="color:var(--muted);font-size:14px;line-height:1.7">
+            We sent a verification link to <strong>${email}</strong>.<br>
+            Click it to activate your account, then <a href="/login" style="color:var(--accent)">sign in</a>.
+          </p>
+        </div>
+      `;
     } else {
       showError(data.error || 'Signup failed. Please try again.');
     }
