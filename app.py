@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
 from groq import Groq
 import cloudinary
 import cloudinary.uploader
@@ -7,18 +7,94 @@ import os
 from dotenv import load_dotenv
 import io
 import json
+from supabase import create_client, Client
+from functools import wraps
+from datetime import datetime, timedelta
+import time
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "talentsift-secret-key-change-in-prod")
 
+# Groq
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+# Cloudinary
 cloudinary.config(
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
     api_key=os.getenv("CLOUDINARY_API_KEY"),
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
+
+# Supabase
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+# Rate limiting (in-memory, per user per day)
+# Format: { user_id: { 'count': N, 'date': 'YYYY-MM-DD' } }
+rate_limit_store = {}
+
+# Subscription limits
+PLAN_LIMITS = {
+    'free': 3,
+    'starter': 50,
+    'pro': 200,
+    'team': 1000
+}
+
+# ─── AUTH HELPERS ────────────────────────────────────────────────────────────
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'user' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated
+
+def get_user_plan(user_id):
+    try:
+        result = supabase.table('users').select('plan').eq('id', user_id).single().execute()
+        return result.data.get('plan', 'free') if result.data else 'free'
+    except:
+        return 'free'
+
+def check_rate_limit(user_id):
+    today = datetime.now().strftime('%Y-%m-%d')
+    plan = get_user_plan(user_id)
+    limit = PLAN_LIMITS.get(plan, 3)
+
+    if user_id not in rate_limit_store:
+        rate_limit_store[user_id] = {'count': 0, 'date': today}
+
+    user_data = rate_limit_store[user_id]
+
+    # Reset if new day
+    if user_data['date'] != today:
+        rate_limit_store[user_id] = {'count': 0, 'date': today}
+        user_data = rate_limit_store[user_id]
+
+    if user_data['count'] >= limit:
+        return False, limit, plan
+
+    rate_limit_store[user_id]['count'] += 1
+    return True, limit, plan
+
+def save_analysis_history(user_id, job_description, results):
+    try:
+        supabase.table('analysis_history').insert({
+            'user_id': user_id,
+            'job_description': job_description[:500],
+            'results': json.dumps(results),
+            'resume_count': len(results),
+            'created_at': datetime.utcnow().isoformat()
+        }).execute()
+    except Exception as e:
+        print("History save error:", e)
+
+# ─── PDF EXTRACTION ──────────────────────────────────────────────────────────
 
 def extract_text_from_pdf(file_bytes):
     try:
@@ -27,16 +103,132 @@ def extract_text_from_pdf(file_bytes):
         for page in reader.pages:
             text += page.extract_text() or ""
         return text
-    except Exception as e:
+    except:
         return ""
+
+# ─── ROUTES ──────────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if 'user' not in session:
+        return redirect(url_for('login'))
+    user = {
+        'id': str(session['user'].get('id', '')),
+        'email': str(session['user'].get('email', '')),
+        'name': str(session['user'].get('name', ''))
+    }
+    return render_template("index.html", user=user)
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if 'user' in session:
+        return redirect(url_for('index'))
+
+    if request.method == "POST":
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+        try:
+            res = supabase.auth.sign_in_with_password({"email": email, "password": password})
+            user = res.user
+            session['user'] = {
+                'id': user.id,
+                'email': user.email,
+                'name': user.user_metadata.get('full_name', email.split('@')[0])
+            }
+            # Ensure user record exists in users table
+            try:
+                supabase.table('users').upsert({
+                    'id': user.id,
+                    'email': user.email,
+                    'plan': 'free'
+                }, on_conflict='id').execute()
+            except:
+                pass
+            return jsonify({"success": True})
+        except Exception as e:
+            return jsonify({"success": False, "error": "Invalid email or password"}), 401
+
+    return render_template("login.html")
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if 'user' in session:
+        return redirect(url_for('index'))
+
+    if request.method == "POST":
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+        name = data.get("name", "")
+        try:
+            res = supabase.auth.sign_up({
+                "email": email,
+                "password": password,
+                "options": {"data": {"full_name": name}}
+            })
+            user = res.user
+            if user:
+                # Insert into users table
+                try:
+                    supabase.table('users').insert({
+                        'id': user.id,
+                        'email': user.email,
+                        'plan': 'free'
+                    }).execute()
+                except:
+                    pass
+                session['user'] = {
+                    'id': user.id,
+                    'email': user.email,
+                    'name': name or email.split('@')[0]
+                }
+                return jsonify({"success": True})
+            else:
+                return jsonify({"success": False, "error": "Signup failed. Try again."}), 400
+        except Exception as e:
+            err = str(e)
+            if "already registered" in err.lower():
+                return jsonify({"success": False, "error": "Email already registered. Please log in."}), 400
+            return jsonify({"success": False, "error": "Signup failed. Please try again."}), 400
+
+    return render_template("signup.html")
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+@app.route("/history")
+@login_required
+def history():
+    user_id = session['user']['id']
+    try:
+        result = supabase.table('analysis_history') \
+            .select('*') \
+            .eq('user_id', user_id) \
+            .order('created_at', desc=True) \
+            .limit(20) \
+            .execute()
+        return jsonify(result.data)
+    except Exception as e:
+        return jsonify([])
 
 @app.route("/analyze", methods=["POST"])
+@login_required
 def analyze():
     try:
+        user_id = session['user']['id']
+
+        # Rate limit check
+        allowed, limit, plan = check_rate_limit(user_id)
+        if not allowed:
+            return jsonify({
+                "error": f"Daily limit reached. Your {plan} plan allows {limit} analyses per day. Upgrade to continue.",
+                "limit_reached": True,
+                "plan": plan
+            }), 429
+
         job_description = request.form.get("job_description")
         resumes = request.files.getlist("resumes")
         results = []
@@ -55,7 +247,6 @@ def analyze():
                 print("Cloudinary error:", e)
 
             text = extract_text_from_pdf(resume_bytes)
-
             if not text.strip():
                 text = "Could not extract text from this PDF."
 
@@ -73,12 +264,7 @@ def analyze():
             )
 
             chat_completion = client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ],
+                messages=[{"role": "user", "content": prompt}],
                 model="llama-3.3-70b-versatile",
             )
 
@@ -91,7 +277,7 @@ def analyze():
 
             try:
                 parsed = json.loads(response_text)
-            except Exception:
+            except:
                 parsed = {
                     "ats_score": 0,
                     "matching_skills": [],
@@ -100,10 +286,10 @@ def analyze():
                     "recommendation": "Maybe"
                 }
 
-            results.append({
-                "filename": resume.filename,
-                "analysis": parsed
-            })
+            results.append({"filename": resume.filename, "analysis": parsed})
+
+        # Save to history
+        save_analysis_history(user_id, job_description, results)
 
         return jsonify(results)
 
@@ -112,4 +298,4 @@ def analyze():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-   app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
