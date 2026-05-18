@@ -11,10 +11,19 @@ from supabase import create_client, Client
 from functools import wraps
 from datetime import datetime, timedelta
 import time
+from jinja2 import Undefined
+from flask.json.provider import DefaultJSONProvider
 
 load_dotenv()
 
+class SafeJSONProvider(DefaultJSONProvider):
+    def default(self, value):
+        if isinstance(value, Undefined):
+            return None
+        return super().default(value)
+
 app = Flask(__name__)
+app.json = SafeJSONProvider(app)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "talentsift-secret-key-change-in-prod")
 
 # Groq
@@ -45,6 +54,40 @@ PLAN_LIMITS = {
 }
 
 # ─── AUTH HELPERS ────────────────────────────────────────────────────────────
+
+def json_safe(value, fallback=""):
+    if isinstance(value, Undefined) or value is None:
+        return fallback
+    if isinstance(value, (str, int, float, bool)):
+        return value
+    return str(value)
+
+def build_session_user(user, fallback_name=""):
+    raw_metadata = getattr(user, "user_metadata", None)
+    metadata = raw_metadata if isinstance(raw_metadata, dict) else {}
+    email = json_safe(getattr(user, "email", ""))
+    name = json_safe(metadata.get("full_name"), fallback_name or email.split("@")[0])
+
+    return {
+        'id': json_safe(getattr(user, "id", "")),
+        'email': email,
+        'name': name
+    }
+
+@app.before_request
+def clean_session_user():
+    user = session.get('user')
+    if not isinstance(user, dict):
+        return
+
+    cleaned = {
+        'id': json_safe(user.get('id')),
+        'email': json_safe(user.get('email')),
+        'name': json_safe(user.get('name'), json_safe(user.get('email')).split('@')[0])
+    }
+
+    if cleaned != user:
+        session['user'] = cleaned
 
 def login_required(f):
     @wraps(f)
@@ -86,7 +129,7 @@ def save_analysis_history(user_id, job_description, results):
     try:
         supabase.table('analysis_history').insert({
             'user_id': user_id,
-            'job_description': job_description[:500],
+            'job_description': (job_description or '')[:500],
             'results': json.dumps(results),
             'resume_count': len(results),
             'created_at': datetime.utcnow().isoformat()
@@ -125,17 +168,13 @@ def login():
         return redirect(url_for('index'))
 
     if request.method == "POST":
-        data = request.get_json()
-        email = data.get("email")
-        password = data.get("password")
+        data = request.get_json() or {}
+        email = data.get("email", "")
+        password = data.get("password", "")
         try:
             res = supabase.auth.sign_in_with_password({"email": email, "password": password})
             user = res.user
-            session['user'] = {
-                'id': user.id,
-                'email': user.email,
-                'name': user.user_metadata.get('full_name', email.split('@')[0])
-            }
+            session['user'] = build_session_user(user, email.split('@')[0])
             # Ensure user record exists in users table
             try:
                 supabase.table('users').upsert({
@@ -157,9 +196,9 @@ def signup():
         return redirect(url_for('index'))
 
     if request.method == "POST":
-        data = request.get_json()
-        email = data.get("email")
-        password = data.get("password")
+        data = request.get_json() or {}
+        email = data.get("email", "")
+        password = data.get("password", "")
         name = data.get("name", "")
         try:
             res = supabase.auth.sign_up({
@@ -178,11 +217,7 @@ def signup():
                     }).execute()
                 except:
                     pass
-                session['user'] = {
-                    'id': user.id,
-                    'email': user.email,
-                    'name': name or email.split('@')[0]
-                }
+                session['user'] = build_session_user(user, name or email.split('@')[0])
                 return jsonify({"success": True})
             else:
                 return jsonify({"success": False, "error": "Signup failed. Try again."}), 400
@@ -210,7 +245,7 @@ def history():
             .order('created_at', desc=True) \
             .limit(20) \
             .execute()
-        return jsonify(result.data)
+        return jsonify(result.data or [])
     except Exception as e:
         return jsonify([])
 
@@ -229,7 +264,7 @@ def analyze():
                 "plan": plan
             }), 429
 
-        job_description = request.form.get("job_description")
+        job_description = request.form.get("job_description", "")
         resumes = request.files.getlist("resumes")
         results = []
 
